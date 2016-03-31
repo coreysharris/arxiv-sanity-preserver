@@ -23,6 +23,8 @@ $ source env/bin/activate       # optional: use virtualenv
 $ pip install -r requirements.txt
 ```
 
+You will also need [ImageMagick](http://www.imagemagick.org/script/index.php) and [pdftotext](https://poppler.freedesktop.org/), which you can install on Ubuntu as `sudo apt-get install imagemagick poppler-utils`.
+
 ### Processing pipeline
 
 I tried to keep the project code relatively clean, but I do encourage you to skim each script when you run it. There are a few magic numbers here and there. In order, the processing pipeline is:
@@ -41,13 +43,13 @@ I have a simple shell script that runs these commands one by one, and every day 
 
 ### Running online
 
-If you'd like to run this flask server online (e.g. AWS) run it as `python serve.py --prod`. 
+If you'd like to run this flask server online (e.g. AWS) run it as `python serve.py --prod`.
 
 You also want to create a `secret_key.txt` file and fill it with random text (see top of `serve.py`).
 
 ### Current workflow
 
-Running the site live is not currently set up for a fully automatic plug and play operation. Instead it's a bit of a manual process and I thought I should document how I'm keeping this code alive right now. I have two machines: a **local** machine that does a lot of the updating and compute and a **remote** machine that hosts the site. 
+Running the site live is not currently set up for a fully automatic plug and play operation. Instead it's a bit of a manual process and I thought I should document how I'm keeping this code alive right now. I have two machines: a **local** machine that does a lot of the updating and compute and a **remote** machine that hosts the site.
 
 I have a script that performs the following update early morning on my local machine:
 
@@ -75,4 +77,4 @@ Of course, I had to set up the ssh keys so that rsync/ssh commands can run witho
 python serve.py --prod --port 80
 ```
 
-The server will load the new files and begin hosting the site. Yes, currently the server has to be restarted, so the site goes down for about 15 seconds. There are several ways to make this cleaner in the future.
+The server will load the new files and begin hosting the site. Yes, currently the server has to be restarted, so the site goes down for about 15 seconds. There are several ways to make this cleaner in the future. Note that on some systems you can't use port 80 without `sudo`. Your two options are to use `iptables` to reroute ports, or less recommended: you can use [setcap](http://stackoverflow.com/questions/413807/is-there-a-way-for-non-root-processes-to-bind-to-privileged-ports-1024-on-l) to elavate the permissions of your `python` interpreter that runs `serve.py`. In this case I'd recommend careful permissions and maybe virtualenv, etc.
