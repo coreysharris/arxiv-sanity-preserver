@@ -114,7 +114,7 @@ function addPapers(num, dynamic) {
     var ix = base_ix + i;
     if(ix >= papers.length) {
       if(!showed_end_msg) {
-        root.append('div').classed('msg', true).html('You hit the limit of number of papers to show is one result.');
+        root.append('div').classed('msg', true).html('No more results to show.');
         showed_end_msg = true;
       }
       break;
