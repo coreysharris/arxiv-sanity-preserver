@@ -7,6 +7,7 @@ import random
 
 os.system('mkdir -p pdf') # ?
 
+verbose=0
 timeout_secs = 10 # after this many seconds we give up on a paper
 numok = 0
 numtot = 0
@@ -30,12 +31,14 @@ for pid,j in db.iteritems():
           shutil.copyfileobj(req, fp)
       time.sleep(0.1 + random.uniform(0,0.2))
     else:
-      print '%s exists, skipping' % (fname, )
+      if verbose > 2:
+        print '%s exists, skipping' % (fname, )
     numok+=1
   except Exception, e:
     print 'error downloading: ', pdf_url
     print e
   
-  print '%d/%d of %d downloaded ok.' % (numok, numtot, len(db))
+  if verbose > 2:
+    print '%d/%d of %d downloaded ok.' % (numok, numtot, len(db))
   
 print 'final number of papers downloaded okay: %d/%d' % (numok, len(db))
