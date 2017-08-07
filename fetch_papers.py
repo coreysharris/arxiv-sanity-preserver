@@ -11,6 +11,7 @@ import os
 import cPickle as pickle
 import argparse
 import random
+import utils
 
 def encode_feedparser_dict(d):
   """ 
@@ -47,8 +48,8 @@ if __name__ == "__main__":
   parser = argparse.ArgumentParser()
   parser.add_argument('--db_path', dest='db_path', type=str, default='db.p', help='database pickle filename that we enrich')
   parser.add_argument('--search_query', dest='search_query', type=str,
-                      # default='cat:cs.CV+OR+cat:cs.LG+OR+cat:cs.CL+OR+cat:cs.NE+OR+cat:stat.ML',
                       default='cat:math.AG',
+                      # default='cat:cs.CV+OR+cat:cs.AI+OR+cat:cs.LG+OR+cat:cs.CL+OR+cat:cs.NE+OR+cat:stat.ML',
                       help='query used for arxiv API. See http://arxiv.org/help/api/user-manual#detailed_examples')
   parser.add_argument('--start_index', dest='start_index', type=int, default=0, help='0 = most recent API result')
   parser.add_argument('--max_index', dest='max_index', type=int, default=10000, help='upper bound on paper index we will fetch')
@@ -95,7 +96,7 @@ if __name__ == "__main__":
       # add to our database if we didn't have it before, or if this is a new version
       if not rawid in db or j['_version'] > db[rawid]['_version']:
         db[rawid] = j
-        print 'updated %s added %s' % (j['updated'], j['title'])
+        print 'updated %s added %s' % (j['updated'].encode('utf-8'), j['title'].encode('utf-8'))
         num_added += 1
       else:
         num_skipped += 1
@@ -104,12 +105,12 @@ if __name__ == "__main__":
     print 'Added %d papers, already had %d.' % (num_added, num_skipped)
 
     if len(parse.entries) == 0:
-      print 'Received no results from arxiv. Rate limiting? Exitting. Restart later maybe.'
+      print 'Received no results from arxiv. Rate limiting? Exiting. Restart later maybe.'
       print response
       break
 
     if num_added == 0 and args.break_on_no_added == 1:
-      print 'No new papers were added. Assuming no new papers exist. Exitting.'
+      print 'No new papers were added. Assuming no new papers exist. Exiting.'
       break
 
     print 'Sleeping for %i seconds' % (args.wait_time , )
@@ -117,4 +118,4 @@ if __name__ == "__main__":
 
   # save the database before we quit
   print 'saving database with %d papers to %s' % (len(db), args.db_path)
-  pickle.dump(db, open(args.db_path, 'wb'))
+  utils.safe_pickle_dump(db, args.db_path)

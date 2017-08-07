@@ -114,7 +114,12 @@ function addPapers(num, dynamic) {
     var ix = base_ix + i;
     if(ix >= papers.length) {
       if(!showed_end_msg) {
-        root.append('div').classed('msg', true).html('No more results to show.');
+        if (ix >= {{numresults}}){
+          var msg = 'Results complete.';
+        } else {
+          var msg = 'You hit the limit of number of papers to show in one result.';
+        }
+        root.append('div').classed('msg', true).html(msg);
         showed_end_msg = true;
       }
       break;
