@@ -27,7 +27,7 @@ for pid,j in db.items():
   numtot += 1
   try:
     if not basename in have:
-      print('fetching %s into %s' % (pdf_url, fname))
+      # print('fetching %s into %s' % (pdf_url, fname))
       req = urlopen(pdf_url, None, timeout_secs)
       with open(fname, 'wb') as fp:
           shutil.copyfileobj(req, fp)
